@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+
+if ! command -v brew &>/dev/null; then # check if brew is installed or not
+  echo "🍺 installing brew......"
+
+  #installing brew
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  if [ -f "opt/homebrew/bin/brew" ]; then
+    elav "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -f "usr/local/bin/brew" ]; then
+    elav "$(/usr/local/bin/brew shellenv)"
+  fi
+
+  echo "✅ Brew installed!!"
+else
+  echo "✅ Brew already installed!!"
+  brew updated
+fi
+
+echo "📜 Generating Brewfile..."
+
+cat <<EOF >Brewfile
+# --- Core Tools ---
+brew "atuin"
+brew "bash"
+brew "bat"
+brew "delve"
+brew "duf"
+brew "entr"
+brew "eza"
+brew "fastfetch"
+brew "fd"
+brew "fzf"
+brew "git"
+brew "git-delta"
+brew "glow"
+brew "htop"
+brew "lazygit"
+brew "mas"
+brew "ncdu"
+brew "neovim"
+brew "nnn"
+brew "ripgrep"
+brew "ripgrep-all"
+brew "shellcheck"
+brew "starship"
+brew "tldr"
+brew "tmux"
+brew "tree"
+brew "vim"
+brew "visidata"
+brew "yazi"
+brew "zoxide"
+
+# --- Languages & Runtimes ---
+brew "go"
+brew "node"
+brew "openjdk"
+brew "llvm"
+brew "luarocks"
+brew "stylua"
+brew "python@3.14"
+brew "numpy"
+brew "python-matplotlib"
+brew "pillow"
+brew "black"
+brew "isort"
+
+# --- Fun & Utilities ---
+brew "cava"
+brew "cbonsai"
+brew "cmatrix"
+brew "cowsay"
+brew "fortune"
+brew "jp2a"
+brew "osx-cpu-temp"
+brew "bpytop"
+brew "btop"
+brew "imagemagick"
+brew "pdfgrep"
+brew "tokei"
+brew "tree-sitter"
+brew "tree-sitter-cli"
+
+# --- Formatting ---
+brew "clang-format"
+brew "google-java-format"
+brew "reattach-to-user-namespace"
+
+# --- Casks (GUI Apps & Fonts) ---
+cask "kitty"
+cask "skim"
+cask "mactex"
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+
+# --- Mac App Store (via mas) ---
+mas "Grammarly for Safari", id: 1462114288
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "WhatsApp", id: 310633997
+mas "Xcode", id: 497799835
+
+# --- VS Code Extensions ---
+vscode "asvetliakov.vscode-neovim"
+vscode "catppuccin.catppuccin-vsc"
+vscode "eamodio.gitlens"
+vscode "esbenp.prettier-vscode"
+vscode "formulahendry.code-runner"
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "grapecity.gc-excelviewer"
+vscode "hediet.vscode-drawio"
+vscode "mechatroner.rainbow-csv"
+vscode "ms-azuretools.vscode-containers"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-python.debugpy"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
+vscode "ms-vscode-remote.remote-ssh"
+vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode.cmake-tools"
+vscode "ms-vscode.cpptools"
+vscode "ms-vscode.cpptools-extension-pack"
+vscode "ms-vscode.cpptools-themes"
+vscode "ms-vscode.remote-explorer"
+vscode "ms-vsliveshare.vsliveshare"
+vscode "oderwat.indent-rainbow"
+vscode "pkief.material-icon-theme"
+vscode "purocean.drawio-preview"
+vscode "redhat.java"
+vscode "ritwickdey.liveserver"
+vscode "sdras.night-owl"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "techer.open-in-browser"
+vscode "tomoki1207.pdf"
+vscode "usernamehw.errorlens"
+vscode "vscjava.migrate-java-to-azure"
+vscode "vscjava.vscode-gradle"
+vscode "vscjava.vscode-java-debug"
+vscode "vscjava.vscode-java-dependency"
+vscode "vscjava.vscode-java-pack"
+vscode "vscjava.vscode-java-test"
+vscode "vscjava.vscode-java-upgrade"
+vscode "vscjava.vscode-maven"
+vscode "wallabyjs.quokka-vscode"
+vscode "wix.vscode-import-cost"
+vscode "xabikos.javascriptsnippets"
+EOF
+
+echo "📦 installing packages......."
+
+brew bundle --file=./Brewfile
+
+rm Brewfile
+brew cleanup
+
+echo "✅ Setup Complet !!"
