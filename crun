@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# for the gcc
+
+NAME=$1
+# checking for the file name;
+if [ -z "$NAME" ]; then
+  echo "❌ Error:Provide the file name"
+  echo "Usage of ./crun"
+  exit 1
+fi
+
+OUTPUT_NAME="${NAME%.*}" # remove the extension
+
+#use the wall to enable all the warning
+gcc -Wall "$NAME" -o "$OUTPUT_NAME"
+
+# check if compilation is sucessful
+
+if [ $? -eq 0 ]; then
+  echo "✅ Build sucessful! Running....."
+  echo "-----------------------------------------"
+
+  #run
+  ./"$OUTPUT_NAME"
+
+  echo ""
+  echo "_________________________________________"
+
+  rm "$OUTPUT_NAME"
+  echo "🧹 Clean up!"
+else
+  echo "❌ compilation failed 😢"
+fi
+
+# to use this use sudo mv crun /usr/local/bin/
