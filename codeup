@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+FILENAME=$1
+SESSION="My_coding_session"
+
+if [ -z "$FILENAME" ]; then
+  tmux new-session -d -s "$SESSION" -n "Code"
+  tmux new-window -t "$SESSION" -n "output"
+  tmux attach -t "$SESSION":Code
+else
+  tmux new-session -d -s "$SESSION" -n "Code"
+  tmux new-window -t "$SESSION" -n "output"
+  tmux send-key -t "$SESSION":Code "nvim $FILENAME" C-m
+  tmux attach -t "$SESSION":Code
+fi
