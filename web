@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+FILENAME=$1
+FOLDER=$2
+SESSION="My_coding_session"
+
+if [ -z "$FILENAME" ]; then
+  echo "insufficient input ☝️🤓"
+  exit 1
+fi
+
+if [ -n "$FOLDER" ]; then
+  mkdir -p "$FOLDER"
+  cd "$FOLDER" || exit
+fi
+
+if [ ! -f "$FILENAME" ]; then
+  cat <<EOF >"$FILENAME"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Sample</title>
+</head>
+<body>
+  <header>
+  </header>
+  <main>
+    <article>
+      <section>
+      </section>
+    </article>
+   </main>
+   <footer>
+     <a href="#">Top</a>
+   </footer>
+</body>
+</html>
+EOF
+fi
+
+touch "style.css"
+
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  tmux attach -t "$SESSION"
+  exit 0
+fi
+
+tmux new-session -d -s "$SESSION" -n "Code"
+tmux new-window -t "$SESSION" -n "output"
+
+tmux send-keys -t "$SESSION":Code "nvim $FILENAME" C-m
+tmux send-keys -t "$SESSION":output "live-server" C-m
+
+tmux attach -t "$SESSION":Code
