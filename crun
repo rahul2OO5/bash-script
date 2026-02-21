@@ -12,7 +12,7 @@ fi
 OUTPUT_NAME="${NAME%.*}" # remove the extension
 
 #use the wall to enable all the warning
-gcc -Wall -fsanitize=address -g "$NAME" -o "$OUTPUT_NAME"
+gcc -Wall -g -Werror "$NAME" -o "$OUTPUT_NAME"
 
 # check if compilation is sucessful
 
@@ -21,8 +21,7 @@ if [ $? -eq 0 ]; then
   echo "-----------------------------------------"
 
   #run
-  ./"$OUTPUT_NAME"
-
+  leaks -atExit -- ./"$OUTPUT_NAME" 2>/dev/null
   echo ""
   echo "_________________________________________"
 
