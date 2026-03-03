@@ -1,35 +1,50 @@
 #!/usr/bin/env bash
-# for the gcc
 
 NAME=$1
-# checking for the file name;
+FLAG=$2
+
 if [ -z "$NAME" ]; then
   echo "❌ Error:Provide the file name"
-  echo "Usage of ./crun"
   exit 1
 fi
 
-OUTPUT_NAME="${NAME%.*}" # remove the extension
+OUTPUT_NAME="${NAME%.*}"
 
-#use the wall to enable all the warning
-gcc -Wall -g -Werror "$NAME" -o "$OUTPUT_NAME"
+if [ "$FLAG" == "-s" ]; then
+  gcc -Wall -g -Werror -fsanitize=address "$NAME" -o "$OUTPUT_NAME"
 
-# check if compilation is sucessful
+  if [ $? -eq 0 ]; then
+    echo "✅ Build sucessful! Running with AddressSanitizer....."
+    echo "-----------------------------------------"
 
-if [ $? -eq 0 ]; then
-  echo "✅ Build sucessful! Running....."
-  echo "-----------------------------------------"
+    ./"$OUTPUT_NAME"
 
-  #run
-  leaks -atExit -- ./"$OUTPUT_NAME" 2>/dev/null
-  echo ""
-  echo "_________________________________________"
+    echo ""
+    echo "_________________________________________"
 
-  rm "$OUTPUT_NAME"
-  rm -rf "$OUTPUT_NAME.dSMY"
-  echo "🧹 Clean up!"
+    rm "$OUTPUT_NAME"
+    rm -rf "$OUTPUT_NAME.dSYM"
+    echo "🧹 Clean up!"
+  else
+    echo "❌ compilation failed 😢"
+  fi
+
 else
-  echo "❌ compilation failed 😢"
-fi
+  gcc -Wall -g -Werror "$NAME" -o "$OUTPUT_NAME"
 
-# to use this use sudo mv crun /usr/local/bin/
+  if [ $? -eq 0 ]; then
+    echo "✅ Build sucessful! Running....."
+    echo "-----------------------------------------"
+
+    leaks -atExit -- ./"$OUTPUT_NAME" 2>/dev/null
+
+    echo ""
+    echo "_________________________________________"
+
+    rm "$OUTPUT_NAME"
+    rm -rf "$OUTPUT_NAME.dSYM"
+    echo "🧹 Clean up!"
+  else
+    echo "❌ compilation failed 😢"
+  fi
+fi
