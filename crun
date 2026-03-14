@@ -11,7 +11,7 @@ fi
 OUTPUT_NAME="${NAME%.*}"
 
 if [ "$FLAG" == "-s" ]; then
-  gcc -Wall -g -Werror -fsanitize=address "$NAME" -o "$OUTPUT_NAME"
+  gcc -Wall -g -Werror -fsanitize=address,undefined "$NAME" -o "$OUTPUT_NAME"
 
   if [ $? -eq 0 ]; then
     echo "✅ Build sucessful! Running with AddressSanitizer....."
